@@ -1,74 +1,33 @@
-<mxfile host="app.diagrams.net" modified="2026-06-20T10:00:00.000Z" agent="Mozilla/5.0" version="24.4.0" type="device">
-  <diagram id="shahra_scheme" name="Page-1">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        
-        <!-- Заголовок -->
-        <mxCell id="title" value="ПРИНЦИПИАЛЬНАЯ СХЕМА РАБОТЫ СИСТЕМЫ" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="150" y="20" width="400" height="40" as="geometry" />
-        </mxCell>
+graph TD
+    %% Стили для красоты
+    classDef sensor fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px,color:#000
+    classDef logic fill:#fff2cc,stroke:#d6b656,stroke-width:2px,color:#000
+    classDef alarm fill:#f8cecc,stroke:#b85450,stroke-width:2px,color:#000
+    classDef safe fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:#000
+    classDef radio fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:#000
+    classDef action fill:#ffe6cc,stroke:#d79b00,stroke-width:2px,color:#000
 
-        <!-- Режим НОРМА -->
-        <mxCell id="mode_normal" value="РЕЖИМ «НОРМА» · МОНИТОРИНГ" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="150" y="80" width="400" height="30" as="geometry" />
-        </mxCell>
+    %% --- СТАНЦИЯ ---
+    subgraph STATION [Станция - Arduino Mega 2560]
+        direction TB
+        S1[Опрос датчиков: O2, CO, CH4, Пыль]:::sensor --> S2[Обработка данных контроллером]:::logic
+        S2 --> S3{Порог превышен?}:::logic
+        S3 -- Да --> S4[Фиксация тревоги alarmLatched = true]:::alarm
+        S3 -- Нет --> S5[Показатели в норме]:::safe
+        S4 --> S6[Включить красный RGB + Сирену]:::alarm
+        S5 --> S7[Включить зеленый RGB]:::safe
+    end
 
-        <mxCell id="n1" value="Опрос датчиков" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="120" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="n2" value="Обработка" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="200" y="120" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="n3" value="В норме?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="360" y="120" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="n4" value="Зеленый свет" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="520" y="120" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="n5" value="LoRa: Всё ОК" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="680" y="120" width="120" height="50" as="geometry" />
-        </mxCell>
+    %% --- РАДИОКАНАЛ ---
+    S6 ==>|LoRa 433 МГц: Тревога| R1
+    S7 ==>|LoRa 433 МГц: Норма| R1
 
-        <!-- Стрелки НОРМА -->
-        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" edge="1" parent="1" source="n1" target="n2"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" edge="1" parent="1" source="n2" target="n3"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" edge="1" parent="1" source="n3" target="n4"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" edge="1" parent="1" source="n4" target="n5"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- Режим ТРЕВОГА -->
-        <mxCell id="mode_alarm" value="РЕЖИМ «ТРЕВОГА» · ОПОВЕЩЕНИЕ" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="150" y="250" width="400" height="30" as="geometry" />
-        </mxCell>
-
-        <mxCell id="a1" value="Превышен порог" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="300" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="a2" value="Фиксация тревоги" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="200" y="300" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="a3" value="Красный свет + Сирена" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="360" y="300" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="a4" value="LoRa: Тревога" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="520" y="300" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="a5" value="Вибрация + Звук" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="680" y="300" width="120" height="50" as="geometry" />
-        </mxCell>
-
-        <!-- Стрелки ТРЕВОГА -->
-        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" edge="1" parent="1" source="a1" target="a2"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" edge="1" parent="1" source="a2" target="a3"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" edge="1" parent="1" source="a3" target="a4"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" edge="1" parent="1" source="a4" target="a5"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <!-- Переход из НОРМЫ в ТРЕВОГУ (стрелка вниз) -->
-        <mxCell id="e_transition" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=1;" edge="1" parent="1" source="n3" target="a1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    %% --- НОСИМОЕ УСТРОЙСТВО ---
+    subgraph WEARABLE [Носимое устройство - Arduino Nano]
+        direction TB
+        R1[Прием сигнала LoRa]:::radio --> R2{Тип сигнала?}:::logic
+        R2 -- Тревога --> R3[Включить: Красный LED, Вибромотор, Звук]:::alarm
+        R2 -- Норма --> R4[Включить: Зеленый LED, остальное выкл.]:::safe
+        R3 --> R5[Шахтер нажимает кнопку Сброс]:::action
+        R5 --> R6[Отключение сигналов тревоги]:::safe
+    end
